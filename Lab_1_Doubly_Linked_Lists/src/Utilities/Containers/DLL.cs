@@ -1,7 +1,10 @@
+using System.Collections;
+using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 
 
-public class DLL<T> //: IEnumerable<T>, IList<T>
+public class DLL<T> : IEnumerable<T>, IList<T>
 {
 
     public class DNode
@@ -9,11 +12,11 @@ public class DLL<T> //: IEnumerable<T>, IList<T>
         public DNode? prev;
         public T? value;
         public DNode? next;
-        public DNode(DNode? prev, T? value, DNode? next)
+        public DNode(DNode? prev_node, T? value_node, DNode? next_node)
         {
-            this.prev = prev;
-            this.value = value;
-            this.next = next;
+            this.prev = prev_node;
+            this.value = value_node;
+            this.next = next_node;
         }
 
 
@@ -23,20 +26,232 @@ public class DLL<T> //: IEnumerable<T>, IList<T>
     public DLL()
     {
         this.head = new DNode(null, default, null);
-        this.tail = new DNode(this.head, default, null);
-        this.head = new DNode(null, default, this.tail);
+        this.tail = new DNode(null, default, null);
+
+        this.head.next = this.tail;
+        this.tail.prev = this.head;
+
     }
-    public void Insert(DNode node, T item)
+    private void Insert(DNode node, T item)
     {
         DNode new_node = new DNode(node.prev, item, node);
         node.prev.next = new_node;
         node.prev = new_node;
     }
 
-    public void Remove(DNode node)
+    private void Remove(DNode node)
     {
         node.prev.next = node.next;
         node.next.prev = node.prev;
     }
 
+    private DNode GetNode(int index)
+    {
+        if (index < 0 || this.head.next == this.tail) throw new IndexOutOfRangeException(nameof(index));
+        DNode CurrentNode = this.head.next;
+        while (index > 1)
+        {
+            CurrentNode = CurrentNode.next;
+            if (CurrentNode.next == null) throw new IndexOutOfRangeException(nameof(index));
+            index--;
+        }
+        return CurrentNode;
+    }
+    public bool Contains(T item)
+    {
+        DNode CurrentNode = this.head.next;
+        while (CurrentNode.next != null)
+        {
+            if (EqualityComparer<T>.Default.Equals(CurrentNode.value, item)) return true;
+            else CurrentNode = CurrentNode.next;
+        }
+        return false;
+    }
+
+    public int Size()
+    {
+        DNode CurrentNode = this.head.next;
+        int size = 0;
+        while (CurrentNode.next != null)
+        {
+            CurrentNode = CurrentNode.next;
+            size++;
+        }
+        return size;
+    }
+
+    public String ToString()
+    {
+        string ReturnString = "";
+        DNode CurrentNode = this.head.next;
+        while (CurrentNode.next != null)
+        {
+            ReturnString += $"{CurrentNode.value}, ";
+        }
+        return ReturnString;
+    }
+
+    public bool Remove(T item)
+    {
+        DNode CurrentNode = this.head.next;
+        while (CurrentNode.next != null)
+        {
+            if (EqualityComparer<T>.Default.Equals(CurrentNode.value, item))
+            {
+                Remove(CurrentNode);
+                return true;
+            }
+        }
+        return false;
+
+
+    }
+
+    public T Front()
+    {
+        if (this.head.next == this.tail) throw new InvalidOperationException("This list is empty");
+        else return this.head.next.value;
+    }
+
+    public T Back()
+    {
+        if (this.head.next == this.tail) throw new InvalidOperationException("This list is empty");
+        else return this.tail.prev.value;
+    }
+
+    public void PushFront(T item)
+    {
+        Insert(this.head.next, item);
+    }
+
+    public void PushBack(T item)
+    {
+        Insert(this.tail, item);
+    }
+
+    public T PopFront()
+    {
+        if (this.head.next == this.tail) throw new InvalidOperationException("This list is empty");
+        T PopValue = this.head.next.value;
+        Remove(this.head.next);
+        return PopValue;
+    }
+
+    public T PopBack()
+    {
+        if (this.head.next == this.tail) throw new InvalidOperationException("This list is empty");
+        T PopValue = this.tail.prev.value;
+        Remove(this.tail.prev);
+        return PopValue;
+    }
+
+    public void clear()
+    {
+        this.head.next = this.tail;
+        this.tail.prev = this.head;
+    }
+
+    public bool IsEmpty()
+    {
+        if (this.head.next == this.tail) return true;
+        else return false;
+    }
+
+
+
+    //IList<T> Methods start here, delete before Dr.Alvin sees
+    public int Count
+    {
+        get
+        {
+            return Size(); //ask about in office hours
+        }
+    }
+
+    public bool IsReadOnly { get { return false; } }
+
+
+    public void Add(T item)
+    {
+        PushBack(item);
+    }
+
+    public void Insert(int index, T item)
+    {
+        DNode InsertNode = GetNode(index);
+        Insert(InsertNode, item);
+    }
+
+    public int IndexOf(T item)
+    {
+        int Count = 0;
+        DNode CurrentNode = this.head.next;
+        while (CurrentNode.next != null)
+        {
+            if (EqualityComparer<T>.Default.Equals(CurrentNode.value, item)) return Count;
+            else
+            {
+                CurrentNode = CurrentNode.next;
+                Count++;
+            }
+
+        }
+        return -1;
+    }
+
+    public T this[int index]
+    {
+        get
+        {
+            DNode node = GetNode(index);
+            return node.value;
+        }
+        set
+        {
+            DNode node = GetNode(index);
+            node.value = value;
+        }
+    }
+
+    public void RemoveAt(int index)
+    {
+        DNode DeleteNode = GetNode(index);
+        Remove(DeleteNode);
+    }
+
+    public void CopyTo(T[] array, int arrayIndex)
+    {
+
+        int Index = 0;
+        DNode CurrentNode = this.head.next;
+        if (this.head.next == this.tail) throw new ArgumentNullException();
+        if (arrayIndex < 0) throw new ArgumentOutOfRangeException();
+        while (CurrentNode.next != null)
+        {
+            if (Index >= arrayIndex)
+            {
+                array[Index] = CurrentNode.value;//figure out how to throw correct excpeiton here
+            }
+            Index++;
+            CurrentNode = CurrentNode.next;
+        }
+
+    }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        DNode CurrentNode = this.head.next;
+        while (CurrentNode.next != null) //change all these to != this.tail??
+        {
+            yield return CurrentNode.value;
+            CurrentNode = CurrentNode.next;
+        }
+    }
+
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 }
+

@@ -37,7 +37,22 @@ public class UnitTest1
     {
         var dll = new DLL<int>();
         dll.Insert(dll.tail, 42);
+        Assert.Equal(42, dll.tail.prev.value);
+        Assert.Equal(42, dll.tail.prev.prev.next.value);
+        Assert.Equal(0, dll.tail.prev.prev.value);
         Assert.Equal(42, dll.head.next.value);
-    }
 
+    }
+    [Fact]
+    public void Remove_DeletesNodeFromList()
+    {
+        //Arrange
+        var dll = new DLL<int>();
+        dll.Insert(dll.tail, 42);
+        //Act
+        dll.Remove(dll.head.next);
+        //Assert
+        Assert.Equal(dll.tail, dll.head.next);
+    }
 }
+
