@@ -12,6 +12,7 @@ public class DLL<T> : IEnumerable<T>, IList<T>
         public DNode? prev;
         public T? value;
         public DNode? next;
+
         public DNode(DNode? prev_node, T? value_node, DNode? next_node)
         {
             this.prev = prev_node;
@@ -23,6 +24,7 @@ public class DLL<T> : IEnumerable<T>, IList<T>
     }
     public DNode? head;
     public DNode? tail;
+    public int size = 0;
     public DLL()
     {
         this.head = new DNode(null, default, null);
@@ -37,19 +39,21 @@ public class DLL<T> : IEnumerable<T>, IList<T>
         DNode new_node = new DNode(node.prev, item, node);
         node.prev.next = new_node;
         node.prev = new_node;
+        size++;
     }
 
     private void Remove(DNode node)
     {
         node.prev.next = node.next;
         node.next.prev = node.prev;
+        size--;
     }
 
     private DNode GetNode(int index)
     {
         if (index < 0 || this.head.next == this.tail) throw new IndexOutOfRangeException(nameof(index));
         DNode CurrentNode = this.head.next;
-        while (index > 1)
+        while (index >= 1)
         {
             CurrentNode = CurrentNode.next;
             if (CurrentNode.next == null) throw new IndexOutOfRangeException(nameof(index));
@@ -70,13 +74,6 @@ public class DLL<T> : IEnumerable<T>, IList<T>
 
     public int Size()
     {
-        DNode CurrentNode = this.head.next;
-        int size = 0;
-        while (CurrentNode.next != null)
-        {
-            CurrentNode = CurrentNode.next;
-            size++;
-        }
         return size;
     }
 
@@ -87,6 +84,7 @@ public class DLL<T> : IEnumerable<T>, IList<T>
         while (CurrentNode.next != null)
         {
             ReturnString += $"{CurrentNode.value}, ";
+            CurrentNode = CurrentNode.next;
         }
         return ReturnString;
     }
@@ -101,6 +99,7 @@ public class DLL<T> : IEnumerable<T>, IList<T>
                 Remove(CurrentNode);
                 return true;
             }
+            CurrentNode = CurrentNode.next;
         }
         return false;
 
@@ -145,10 +144,11 @@ public class DLL<T> : IEnumerable<T>, IList<T>
         return PopValue;
     }
 
-    public void clear()
+    public void Clear()
     {
         this.head.next = this.tail;
         this.tail.prev = this.head;
+        size = 0;
     }
 
     public bool IsEmpty()
@@ -158,13 +158,11 @@ public class DLL<T> : IEnumerable<T>, IList<T>
     }
 
 
-
-    //IList<T> Methods start here, delete before Dr.Alvin sees
     public int Count
     {
         get
         {
-            return Size(); //ask about in office hours
+            return size;
         }
     }
 
@@ -223,16 +221,19 @@ public class DLL<T> : IEnumerable<T>, IList<T>
     {
 
         int Index = 0;
+        int Dll_index = 0;
         DNode CurrentNode = this.head.next;
-        if (this.head.next == this.tail) throw new ArgumentNullException();
+        if (array == null) throw new ArgumentNullException();
         if (arrayIndex < 0) throw new ArgumentOutOfRangeException();
+        if (array.Length < size - arrayIndex) throw new ArgumentException();
         while (CurrentNode.next != null)
         {
-            if (Index >= arrayIndex)
+            if (Dll_index >= arrayIndex)
             {
                 array[Index] = CurrentNode.value;//figure out how to throw correct excpeiton here
+                Index++;
             }
-            Index++;
+            Dll_index++;
             CurrentNode = CurrentNode.next;
         }
 
@@ -253,5 +254,8 @@ public class DLL<T> : IEnumerable<T>, IList<T>
     {
         return GetEnumerator();
     }
+
+
+    //ASK about this
 }
 
