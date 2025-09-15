@@ -2,11 +2,13 @@ using System.Collections;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
-
+//Zach B & Rick K
 
 public class DLL<T> : IEnumerable<T>, IList<T>
 {
 
+
+    //Change Dnode visibility
     public class DNode
     {
         public DNode? prev;
@@ -153,8 +155,7 @@ public class DLL<T> : IEnumerable<T>, IList<T>
 
     public bool IsEmpty()
     {
-        if (this.head.next == this.tail) return true;
-        else return false;
+        return (this.head.next == this.tail);
     }
 
 
@@ -230,7 +231,7 @@ public class DLL<T> : IEnumerable<T>, IList<T>
         {
             if (Dll_index >= arrayIndex)
             {
-                array[Index] = CurrentNode.value;//figure out how to throw correct excpeiton here
+                array[Index] = CurrentNode.value;
                 Index++;
             }
             Dll_index++;
@@ -256,6 +257,5 @@ public class DLL<T> : IEnumerable<T>, IList<T>
     }
 
 
-    //ASK about this
 }
 

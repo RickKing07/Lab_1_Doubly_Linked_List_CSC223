@@ -7,7 +7,7 @@ using System.Linq;
  * ====================================================================
  * 
  * Test Author: Claude (Anthropic AI Assistant)
- * Created: September 11, 2025
+ * Created: September 11, 2025-
  * 
  * Description:
  * Comprehensive unit test suite for the DLL<T> (Doubly Linked List) 
