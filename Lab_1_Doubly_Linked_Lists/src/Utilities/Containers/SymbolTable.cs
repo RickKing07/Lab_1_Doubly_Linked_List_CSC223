@@ -7,45 +7,12 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue>
     private DLL<TKey> _keys;
     private DLL<TValue> _values;
     private int _size;
-    public void SymbolTableConstruct()
+    public SymbolTable()
     {
         this._keys = new DLL<TKey>();
         this._values = new DLL<TValue>();
         this._size = 0;
     }
-
-    public void Add(TKey key, TValue value)
-    {
-        this._keys.Add(key);
-        this._values.Add(value);
-        this._size++;
-    }
-
-    public bool Remove(TKey key) //impliment item not found for a false return
-    {
-        int index = this._keys.IndexOf(key);
-        this._keys.RemoveAt(index);
-        this._values.RemoveAt(index);
-        this._size--;
-        return true;
-
-    }
-
-    public void Clear()
-    {
-        this._keys.Clear();
-        this._values.Clear();
-        this._size = 0;
-    }
-
-    public bool Contains(TValue value) { return this._values.Contains(value); }
-    public bool ContainsKey(TKey key) { return this._keys.Contains(key); }
-
-    public void CopyTo(T[] array, int index)
-    {
-        //skipped for now
-    }
-
     bool IDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value)
     {
         throw new NotImplementedException();
@@ -53,7 +20,9 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue>
 
     public void Add(KeyValuePair<TKey, TValue> item)
     {
-        throw new NotImplementedException();
+        this._keys.Add(item.Key);
+        this._values.Add(item.Value);
+        this._size++;
     }
 
     public bool Contains(KeyValuePair<TKey, TValue> item)
@@ -68,7 +37,11 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue>
 
     public bool Remove(KeyValuePair<TKey, TValue> item)
     {
-        throw new NotImplementedException();
+        int index = this._keys.IndexOf(item.Key);
+        this._keys.RemoveAt(index);
+        this._values.RemoveAt(index);
+        this._size--;
+        return true;
     }
 
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
@@ -81,9 +54,24 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue>
         return GetEnumerator();
     }
 
-    public bool TryGetValue
+    public void Add(TKey key, TValue value)
     {
+        throw new NotImplementedException();
+    }
 
+    public bool ContainsKey(TKey key)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Remove(TKey key)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Clear()
+    {
+        throw new NotImplementedException();
     }
 
     public ICollection<TKey> Keys => throw new NotImplementedException();
