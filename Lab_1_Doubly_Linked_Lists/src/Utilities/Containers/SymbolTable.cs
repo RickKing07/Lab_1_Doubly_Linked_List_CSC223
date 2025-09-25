@@ -28,11 +28,18 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
     }
     bool IDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value)
     {
-        int index = this._keys.IndexOf(key);
-        value = this._values[index];
-
-        return index != -1;
-
+        TValue LocalValue = default(TValue);
+        if (this.TryGetValueLocal(key, out LocalValue))
+        {
+            value = LocalValue;
+            return true;
+        }
+        if (this._parent != null)
+        {
+            return ((IDictionary<TKey, TValue>)this._parent).TryGetValue(key, out value);
+        }
+        value = default(TValue);
+        return false;
     }
 
     public void Add(KeyValuePair<TKey, TValue> item)
@@ -99,11 +106,11 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
 
     public bool ContainsKey(TKey key)
     {
-        if (this._parent != null)
+        if (this._parent == null)
         {
-            return ContainsKey(key);
+            return ContainsKeyLocal(key);
         }
-        else if (ContainsKey(key))
+        else if (ContainsKeyLocal(key))
         {
             return true;
         }
@@ -160,9 +167,20 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
 
     public bool ContainsKeyLocal(TKey key)
     {
+        if (key == null) throw new ArgumentNullException("Null key");
         return this._keys.IndexOf(key) != -1;
     }
+
+    public bool TryGetValueLocal(TKey key, out TValue value)
+    {
+
+        int index = this._keys.IndexOf(key);
+        value = this._values[index];
+
+        return index != -1;
+    }
 }
+
 
 //Visual Studio quickfix for Type T
 public class T
