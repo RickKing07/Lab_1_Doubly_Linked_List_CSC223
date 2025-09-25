@@ -256,6 +256,5 @@ public class DLL<T> : IEnumerable<T>, IList<T>
         return GetEnumerator();
     }
 
-
 }
 
