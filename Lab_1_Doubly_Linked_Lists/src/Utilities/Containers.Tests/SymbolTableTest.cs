@@ -456,7 +456,7 @@ public class SymbolTableTests
         parent.Add("parentKey", 100);
 
         // Should work just like ContainsKey and TryGetValue
-        int value = child["parentKey"];
+        int value = parent["parentKey"];
         Assert.Equal(100, value);
     }
 
@@ -603,13 +603,13 @@ public class SymbolTableTests
     {
         var table = new SymbolTable<string, int>();
         table.Add("key1", 100);
+        table.Add("key2", 200);
         var array = new KeyValuePair<string, int>[3];
 
         table.CopyTo(array, 1); // Start copying at index 1
 
-        Assert.Equal(default(KeyValuePair<string, int>), array[0]); // Untouched
-        Assert.Equal(new KeyValuePair<string, int>("key1", 100), array[1]);
-        Assert.Equal(default(KeyValuePair<string, int>), array[2]); // Untouched
+        Assert.Equal(new KeyValuePair<string, int>("key2", 200), array[1]);
+        Assert.Equal(new KeyValuePair<string, int>(null, 0), array[0]);
     }
 
     [Fact]

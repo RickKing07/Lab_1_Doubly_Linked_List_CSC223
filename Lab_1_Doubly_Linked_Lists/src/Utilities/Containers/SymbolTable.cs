@@ -44,14 +44,20 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
 
     public void Add(KeyValuePair<TKey, TValue> item)
     {
+        if (item.Key == null)
+            throw new ArgumentNullException(nameof(item), "Key cannot be null");
+
+        if (this.ContainsKeyLocal(item.Key))
+            throw new ArgumentException($"Key '{item.Key}' already exists in the symbol table");
+
         this._keys.Add(item.Key);
         this._values.Add(item.Value);
         this._size++;
     }
-
     public bool Contains(KeyValuePair<TKey, TValue> item)
     {
         int index = this._keys.IndexOf(item.Key);
+        if (index == -1) return false;
         TValue value = this._values[index];
         return index != -1 && value.Equals(item.Value);
     }
@@ -69,13 +75,14 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
                 array[Index] = new KeyValuePair<TKey, TValue>(this._keys[Index], this._values[Index]);//TKey TValue pair; 
                 Index++;
             }
-            Index++;
+            else { Index = Index + 1; }
         }
     }
 
     public bool Remove(KeyValuePair<TKey, TValue> item)
     {
         int index = this._keys.IndexOf(item.Key);
+        if (index == -1) return false;
         this._keys.RemoveAt(index);
         this._values.RemoveAt(index);
         this._size--;
@@ -149,11 +156,12 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
     {
         get
         {
-
-            int index = this._keys.IndexOf(key);
-            if (index == -1) throw new KeyNotFoundException($"Key '{key}' not found");
-
-            return this._values[index];
+            TValue value;
+            if (((IDictionary<TKey, TValue>)this).TryGetValue(key, out value))
+            {
+                return value;
+            }
+            throw new KeyNotFoundException($"Key '{key}' not found");
         }
 
         set
@@ -174,10 +182,17 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
     public bool TryGetValueLocal(TKey key, out TValue value)
     {
 
-        int index = this._keys.IndexOf(key);
-        value = this._values[index];
 
-        return index != -1;
+        int index = this._keys.IndexOf(key);
+        if (index != -1)
+        {
+
+
+            value = this._values[index];
+            return true;
+        }
+        value = default(TValue);
+        return false;
     }
 }
 
