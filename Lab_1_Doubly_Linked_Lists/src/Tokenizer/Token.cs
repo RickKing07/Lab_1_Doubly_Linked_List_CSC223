@@ -41,10 +41,20 @@ namespace Tokenizer
         public char _value;
         public TokenType _tkntype;
 
-        public Token(char tkn)
+        public Token(char tkn, TokenType type)
         {
-            //public char _value = tkn;
-            //public TokenType _tknType;
+            _value = tkn;
+            _tkntype = type;
+        }
+
+        public string ToString(Token tkn)
+        {
+            Console.WriteLine($"This token has the value {_value} and the type of {_tkntype}"); //print tostring, prob dosnt work rn
+        }
+
+        public bool Equals(Token tkn1, Token tkn2)
+        {
+            return tkn1._value == tkn2._value; //use equality comparer???
         }
 
 
