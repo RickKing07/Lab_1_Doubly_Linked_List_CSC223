@@ -1,5 +1,4 @@
 using System;
-
 namespace Tokenizer
 {
     //enum and class def
@@ -12,26 +11,42 @@ namespace Tokenizer
         FLOAT,
         ASSIGMENT,
         OPERATOR,
-        LEFT_PAEREN,
+        LEFT_PAREN,
         RIGHT_PAREN,
         LEFT_CURLY,
         RIGHT_CURLY
     }
+
+    public static class TokenConstants
+    {
+        //Plus, LEFT_PAEREN, LEFT_CURLY, ASSIGMENT, DECIMAL_POINT contstatns defined
+
+        const string PLUS = "+";
+        const string MINUS = "-";
+        const string TIMES = "*";
+        const string FLOAT_DIV = "//";
+        const string INT_DIV = "/";
+        const string MOD = "%";
+        const string EXP = "**";
+        const string LEFT_PAREN = "(";
+        const string LEFT_CURLY = "{";
+        const string ASSIGMENT = ":=";
+        const string DECIMAL_POINT = ".";
+        const string RIGHT_PAREN = ")";
+        const string RIGHT_CURLY = "}";
+
+    }
+    public class Token
+    {
+        public char _value;
+        public TokenType _tkntype;
+
+        public Token(char tkn)
+        {
+            //public char _value = tkn;
+            //public TokenType _tknType;
+        }
+
+
+    }
 }
-public static class TokenConstants
-{
-    //Plus, LEFT_PAEREN, LEFT_CURLY, ASSIGMENT, DECIMAL_POINT contstatns defined
-
-    //TokenType ASSIGMENT PLUS = "+"; //check if this is correct
-}
-public class Token(char x) //better name -_-
-{
-    //aggregating structure that gets tokentype and value of a token
-    public TokenType Type { get; set; }
-    public char Value { get; set; } //might could be readonly
-                                    //standard class constructors like to string, equals, and more
-}
-
-
-
-
