@@ -61,7 +61,7 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
             throw new ArgumentNullException(nameof(item), "Key cannot be null");
 
         if (this.ContainsKeyLocal(item.Key))
-            throw new ArgumentException($"Key '{item.Key}' already exists in the symbol table");
+            throw new ArgumentException($"Key '{item.Key}' already exists in the symbol table"); //rethink
 
         // Add to parallel data structures and maintain size
         this._keys.Add(item.Key);
@@ -69,7 +69,7 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
         this._size++;
     }
 
-    public bool Contains(KeyValuePair<TKey, TValue> item)
+    public bool Contains(KeyValuePair<TKey, TValue> item) //Needs to Check Parent, look at contains(T item) for reference
     {
         int index = this._keys.IndexOf(item.Key);
         if (index == -1) return false;
@@ -92,7 +92,7 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
                 array[Index] = new KeyValuePair<TKey, TValue>(this._keys[Index], this._values[Index]);
                 Index++;
             }
-            else { Index = Index + 1; }
+            else Index = Index + 1;
         }
     }
 
@@ -111,7 +111,7 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
     /// <summary>
     /// Iterator that yields key-value pairs from parallel data structures
     /// </summary>
-    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() //use getenum from symbol tables and just step once for O(1).
     {
         int index = 0;
         while (index < this._size)
@@ -126,7 +126,7 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
         return GetEnumerator();
     }
 
-    public void Add(TKey key, TValue value)
+    public void Add(TKey key, TValue value) //check for duplicate keys!!
     {
         this._keys.Add(key);
         this._values.Add(value);
@@ -171,7 +171,7 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
         this._size = 0;
     }
 
-    public ICollection<TKey> Keys => this._keys;
+    public ICollection<TKey> Keys => this._keys; //properties got at the top by constructors, like instance vars
 
     public ICollection<TValue> Values => this._values;
 
@@ -228,7 +228,3 @@ public class SymbolTable<TKey, TValue> : IDictionary<TKey, TValue> //make parent
         return false;
     }
 }
-
-//Visual Studio quickfix for Type T
-public class T
-{ }
