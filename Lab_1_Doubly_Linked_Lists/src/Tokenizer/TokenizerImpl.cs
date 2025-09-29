@@ -3,6 +3,9 @@ public class TokenizerImpl
 {
     public List<Token> Tokenize(string input)
     {
+        //split input, loop through split results
+        inputList = input.split(" ");
+
         List<Token> TokenList = [];
         int index = 0;
         while (index < input.Length())
