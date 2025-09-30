@@ -6,21 +6,41 @@ public class TokenizerImpl
         //split input, loop through split results
         inputList = input.split(" ");
 
+        //!! for skipping indicies, use index ref/out var to manipulate it from within methods
         List<Token> TokenList = [];
         int index = 0;
-        while (index < input.Length())
+        while (index < inputList.Length())
         {
-            if (char.IsDigit(input[index]))
+            currentChar = input[index];
+            if (char.IsDigit(currentChar))
             {
-                TokenList.Add(PrimitiveH(input[index]));
+                TokenList.Add(LiteralH(currentChar));
             }
-
+            if (char.IsLetter(currentChar))
+            {
+                TokenList.Add(PrimitiveH(currentChar));
+            }
+            if (!char.IsWhiteSpace(currentChar))
+            {
+                if (currentChar == null) //big equals chain here, not sure thats good code
+                {
+                    TokenList.Add(OperatorsH(currentChar));
+                }
+                //could just be else i think
+                else if (currentChar == "{" || currentChar == "}" || currentChar == "(" || currentChar == ")")
+                {
+                    TokenList.Add(StructureH(currentChar));
+                }
+            }
         }
-        //Determine Token type
-        //call appropriate helper method that returns a token
-        //add token to big list
-        //return bit list<Token>
+
+        index++;
     }
+    //Determine Token type
+    //call appropriate helper method that returns a token
+    //add token to big list
+    //return bit list<Token>
+
 
     public Token PrimitiveH(char letter)
     {
