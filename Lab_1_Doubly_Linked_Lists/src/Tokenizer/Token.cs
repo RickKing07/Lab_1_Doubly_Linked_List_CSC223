@@ -41,7 +41,7 @@ namespace Tokenizer
         public char _value;
         public TokenType _tkntype;
 
-        public Token(char tkn, TokenType type)
+        public Token(string tkn, TokenType type)
         {
             _value = tkn;
             _tkntype = type;
