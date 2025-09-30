@@ -7,9 +7,9 @@ namespace Tokenizer
     {
         RETURN,
         VARIABLE,
-        INT,
+        INTEGER,
         FLOAT,
-        ASSIGMENT,
+        ASSIGNMENT,
         OPERATOR,
         LEFT_PAREN,
         RIGHT_PAREN,
@@ -21,25 +21,25 @@ namespace Tokenizer
     {
         //Plus, LEFT_PAEREN, LEFT_CURLY, ASSIGMENT, DECIMAL_POINT contstatns defined
 
-        const string PLUS = "+";
-        const string MINUS = "-";
-        const string TIMES = "*";
-        const string FLOAT_DIV = "//";
-        const string INT_DIV = "/";
-        const string MOD = "%";
-        const string EXP = "**";
-        const string LEFT_PAREN = "(";
-        const string LEFT_CURLY = "{";
-        const string ASSIGMENT = ":=";
-        const string DECIMAL_POINT = ".";
-        const string RIGHT_PAREN = ")";
-        const string RIGHT_CURLY = "}";
+        public const string PLUS = "+";
+        public const string MINUS = "-";
+        public const string TIMES = "*";
+        public const string FLOAT_DIV = "//";
+        public const string INT_DIV = "/";
+        public const string MOD = "%";
+        public const string EXP = "**";
+        public const string LEFT_PAREN = "(";
+        public const string LEFT_CURLY = "{";
+        public const string ASSIGMENT = ":=";
+        public const string DECIMAL_POINT = ".";
+        public const string RIGHT_PAREN = ")";
+        public const string RIGHT_CURLY = "}";
 
     }
     public class Token
     {
-        public char _value;
-        public TokenType _tkntype;
+        public string _value { get; set; }
+        public TokenType _tkntype { get; set; }
 
         public Token(string tkn, TokenType type)
         {
@@ -47,7 +47,7 @@ namespace Tokenizer
             _tkntype = type;
         }
 
-        public string ToString(Token tkn)
+        public void ToString(Token tkn)
         {
             Console.WriteLine($"This token has the value {_value} and the type of {_tkntype}"); //print tostring, prob dosnt work rn
         }
