@@ -34,6 +34,7 @@ namespace Tokenizer
         public const string DECIMAL_POINT = ".";
         public const string RIGHT_PAREN = ")";
         public const string RIGHT_CURLY = "}";
+        public const string RETURN = "return";
 
     }
     public class Token
