@@ -6,33 +6,37 @@ public class TokenizerImpl
 {
     public List<Token> Tokenize(string input)
     {
-        //!! for skipping indicies, use index ref/out var to manipulate it from within methods
         List<Token> TokenList = [];
         int index = 0;
+
         while (index < input.Length)
         {
             char currentChar = input[index];
 
-            if (char.IsWhiteSpace(currentChar)) { continue; }
-
-            else if (char.IsDigit(currentChar)) { TokenList.Add(LiteralH(input, ref index)); }
+            if (char.IsWhiteSpace(currentChar)){ index++; }
+            else if (char.IsDigit(currentChar)){ TokenList.Add(LiteralH(input, ref index)); }
             else if (char.IsLetter(currentChar)) { TokenList.Add(PrimitiveH(input, ref index)); }
-
-            else if (new[] { TokenConstants.LEFT_CURLY, TokenConstants.RIGHT_CURLY, TokenConstants.LEFT_PAREN, TokenConstants.RIGHT_PAREN } //
-            .Contains(currentChar.ToString())) { TokenList.Add(StructureH(currentChar.ToString())); }
-
-            else { TokenList.Add(OperatorsH(input, ref index)); }
-            index++;
+            else if (new[] {
+                TokenConstants.LEFT_CURLY,
+                TokenConstants.RIGHT_CURLY,
+                TokenConstants.LEFT_PAREN,
+                TokenConstants.RIGHT_PAREN
+            }.Contains(currentChar.ToString()))
+            {
+                TokenList.Add(StructureH(currentChar.ToString()));
+                index++;
+            }
+            else{ TokenList.Add(OperatorsH(input, ref index)); }
         }
-
         return TokenList;
     }
 
 
+
     //Determine Token type
-    //call appropriate helper method that returns a token
-    //add token to big list
-    //return bit list<Token>
+        //call appropriate helper method that returns a token
+        //add token to big list
+        //return bit list<Token>
 
 
     private Token PrimitiveH(string input, ref int index)
@@ -63,8 +67,11 @@ public class TokenizerImpl
             index++;
         }
 
-        if (input[index].ToString() == TokenConstants.DECIMAL_POINT)
+        if (index < input.Length && input[index].ToString() == TokenConstants.DECIMAL_POINT)
         {
+            item += TokenConstants.DECIMAL_POINT;
+            index++;
+
             while ((index < input.Length) && char.IsDigit(input[index]))
             {
                 item = item + input[index];
@@ -80,39 +87,47 @@ public class TokenizerImpl
 
     private Token OperatorsH(string input, ref int index)
     {
-        //determine type (Operator or ASSIGMENT)
-        //Feed it to token init with char && type
-        // //return Token
-        // if (input == TokenConstants.PLUS) { return new Token(input, TokenType.OPERATOR); } style changed with .Contains(input)
+        // handle "**" else print indiudally in the test
+        if (input[index] == '*' &&
+            index + 1 < input.Length && input[index + 1] == '*')
+        {
+            index += 2;
+            return new Token(TokenConstants.EXP, TokenType.OPERATOR);
+        }
+
+        // handle "//" else individually in test
+        if (input[index] == '/' &&
+            index + 1 < input.Length && input[index + 1] == '/')
+        {
+            index += 2;
+            return new Token(TokenConstants.FLOAT_DIV, TokenType.OPERATOR);
+        }
+
+        // handle ":="
+        if (input[index] == ':' &&
+            index + 1 < input.Length && input[index + 1] == '=')
+        {
+            index += 2;
+            return new Token(TokenConstants.ASSIGMENT, TokenType.ASSIGNMENT);
+        }
+
+        // single-char operators
+        string element = input[index].ToString();
         if (new[] {
                 TokenConstants.PLUS,
                 TokenConstants.MINUS,
                 TokenConstants.TIMES,
                 TokenConstants.MOD,
-                TokenConstants.EXP
-            }.Contains(input))
-        { return new Token(input, TokenType.OPERATOR); }
-
-        else if (input == TokenConstants.INT_DIV)
+                TokenConstants.INT_DIV
+            }.Contains(element))
         {
-            if (input[index + 1] == '/')
-            {
-                string item = TokenConstants.FLOAT_DIV;
-                index += 2;
-                return new Token(item, TokenType.OPERATOR);
-            }
-            return new Token(input, TokenType.OPERATOR);
+            index++;
+            return new Token(element, TokenType.OPERATOR);
         }
 
-        else if (input == ":")
-        {
-            string item = TokenConstants.ASSIGMENT;
-            index = index + 2;
-            return new Token(item, TokenType.ASSIGNMENT);
-        }
-
-        else { throw new ArgumentException("Unexpected String"); }
+        throw new ArgumentException("Unexpected String");
     }
+
 
     private Token StructureH(string letter)
     {

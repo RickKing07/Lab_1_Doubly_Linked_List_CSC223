@@ -55,7 +55,7 @@ namespace Tokenizer
 
         public bool Equals(Token tkn1, Token tkn2)
         {
-            return tkn1._value == tkn2._value; //use equality comparer???
+            return tkn1._value == tkn2._value;
         }
 
 
