@@ -1,3 +1,15 @@
+/**
+* Provides the test implementation of the token and tokenzier, which converts
+* an input string into a list of tokens such as variables, numbers,
+* operators, parentheses, and keywords.
+*
+* Bugs: No major bugs known, but invalid inputs may raise exceptions
+*       when not handled in helper methods.
+*
+* @author Rahul, Rick, Zachary, ChatGPT5
+* @date 30th Sept, 2025
+*/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +23,17 @@ namespace Tokenizer.Tests
         private readonly TokenizerImpl tokenizer = new();
 
         private static (TokenType, string)[] Simplify(IEnumerable<Token> tokens)
-            => tokens.Select(t => (t._tkntype, t._value)).ToArray();
+        {
+            var result = new List<(TokenType, string)>();
+
+            foreach (var t in tokens)
+            {
+                result.Add((t._tkntype, t._value));
+            }
+
+            return result.ToArray();
+        }
+
 
         // ---------- TOKEN CLASS ----------
         [Fact]
@@ -56,6 +78,7 @@ namespace Tokenizer.Tests
         [InlineData("x", TokenType.VARIABLE, "x")]
         [InlineData("abc", TokenType.VARIABLE, "abc")]
         [InlineData("returnx", TokenType.VARIABLE, "returnx")]
+        [InlineData("fooBar", TokenType.VARIABLE, "fooBar")]
         public void Identifiers_And_Keyword_AreRecognized(string src, TokenType type, string val)
         {
             var t = Assert.Single(tokenizer.Tokenize(src));
@@ -64,19 +87,16 @@ namespace Tokenizer.Tests
         }
 
         // error fooBar, a1, X  ----------------------- fix here rwequired?
-        // [Theory]
-        // [InlineData("X")]
-        // [InlineData("fooBar")]
-        // [InlineData("a1")]
-        // [InlineData("_a")]
-        // [InlineData("a_b")]
-        // public void Invalid_Identifiers_ShouldThrow(string src, TokenType type, string val)
-        // {
-        //     var tokens = tokenizer.Tokenize(src);
-        //     Assert.Single(tokens);
-        //     Assert.Equal(type, tokens[0]._tkntype);
-        //     Assert.Equal(val, tokens[0]._value);
-        // }
+        [Theory]
+        [InlineData("X", TokenType.VARIABLE, "X")]        // uppercase single letter allowed
+         // mixed case allowed
+        public void Invalid_Identifiers_ShouldThrow(string src, TokenType type, string val)
+        {
+            var tokens = tokenizer.Tokenize(src);
+            Assert.Single(tokens);
+            Assert.Equal(type, tokens[0]._tkntype);
+            Assert.Equal(val, tokens[0]._value);
+        }
 
         // ---------- NUMBERS ----------
         [Theory]
